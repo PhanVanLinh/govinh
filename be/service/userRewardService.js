@@ -27,7 +27,7 @@ const addUserReward = async (req, res) => {
     }
     let currentScore = userResult[0].current_score
     let rewardValue = rewardResult[0].value
-    if ( currentScore < rewardValue) {
+    if (currentScore < rewardValue) {
       return res.status(400).json({error: 'Not enough current score'})
     }
 
