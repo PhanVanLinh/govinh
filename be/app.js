@@ -1,14 +1,19 @@
+require('dotenv').config();
 const express = require('express');
+const bodyParser = require('body-parser');
+const router = require('./router');
+
 const app = express();
-const port = 3000;
 
-// Middleware to parse JSON
-app.use(express.json());
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
+// Routes
+app.use('/api', router);
 
-app.listen(3008, () => {
-  console.log(`Server is running at http://localhost:3008`);
+// Start the server
+const PORT = process.env.PORT || 3008;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

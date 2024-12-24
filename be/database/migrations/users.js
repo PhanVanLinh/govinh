@@ -6,7 +6,8 @@ const createUsersTable = `
   (
     id INT AUTO_INCREMENT PRIMARY KEY,
     phone VARCHAR(15) NOT NULL UNIQUE,
-    score INT NOT NULL,
+    score INT NULL DEFAULT 0,
+    current_score INT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 `;
