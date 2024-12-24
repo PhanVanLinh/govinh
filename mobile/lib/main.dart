@@ -31,8 +31,12 @@ final _router = GoRouter(
       builder: (context, state) => const RedeemScreen(id: '123',),
     ),
     GoRoute(
-      path: '/codes',
-      builder: (context, state) => const CodesScreen(id: '123',),
+      path: '/codes/:from/:to',
+      builder: (context, state) =>  CodesScreen(
+        from: int.tryParse(state.pathParameters['from'] ?? ""),
+        to: int.tryParse(state.pathParameters['to'] ?? ""),
+        adminCode: state.uri.queryParameters['adminCode'] ?? "",
+      ),
     ),
     GoRoute(
       path: '/redeem/:id',

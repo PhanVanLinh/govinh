@@ -1,24 +1,38 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:govinh/data/model/code.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:dio/dio.dart';
+import 'dart:convert';
 
 class CodesScreen extends StatefulWidget {
-  final String? id;
+  final int? from;
+  final int? to;
+  final String adminCode;
 
-  const CodesScreen({super.key, required this.id});
+  const CodesScreen({super.key, this.from, this.to, required this.adminCode});
 
   @override
   State<StatefulWidget> createState() {
-    return CodesScreenState1();
+    return CodesScreenState();
   }
 }
 
-class CodesScreenState1 extends State<CodesScreen> {
+class CodesScreenState extends State<CodesScreen> {
   @override
   Widget build(BuildContext context) {
+    if(widget.adminCode.isEmpty) {
+      return const Scaffold(
+        body: Column(
+          children: [
+            Text("No permission"),
+          ],
+        )
+      );
+    }
     return Scaffold(
       body: Container(
         color: Colors.red,
@@ -40,25 +54,28 @@ class CodesScreenState1 extends State<CodesScreen> {
   }
 
   Future<Uint8List> generateResume(PdfPageFormat format) async {
-    final doc = pw.Document(title: 'My Résumé', author: 'David PHAM-VAN');
-    // doc.addPage(
-    //   pw.Page(
-    //     build: (pw.Context context) => pw.Text('Hello World!'),
-    //   ),
-    // );
+    final doc = pw.Document(title: 'Code', author: 'David PHAM-VAN');
+    final dio = Dio();
+    final response = await dio.get('https://mocki.io/v1/5b848dc4-ef95-451d-9f22-d6d1aadab625');
 
-    // final image = await imageFromAssetBundle('assets/images/logo.png');
+    // Extract items list and parse it into a List<Code>
+    List<Code> codes = (response.data['items'] as List<dynamic>)
+        .map((item) => Code.fromJson(item))
+        .toList();
+
+    // Print the parsed data
+    for (var code in codes) {
+    print('ID: ${code.id}, Random String: ${code.value}');
+    }
+
     final img = await rootBundle.load('assets/images/logo.png');
     final imageBytes = img.buffer.asUint8List();
     pw.Image image1 = pw.Image(pw.MemoryImage(imageBytes), width: 120, height: 120);
 
-    print("LINHSSS");
-    // print("LINHSSS $image");
-
     List<pw.Widget> children = List.empty(growable: true);
     var i = 0;
     while(i < 18) {
-      children.add(buildItem(image1),);
+      children.add(buildItem(image1, codes[i]),);
       i++;
     }
 
@@ -101,7 +118,7 @@ class CodesScreenState1 extends State<CodesScreen> {
     return doc.save();
   }
 
-  pw.Widget buildItem(pw.Image image1) {
+  pw.Widget buildItem(pw.Image image1, Code code) {
     return pw.Container(
         alignment: pw.Alignment.center,
         decoration: pw.BoxDecoration(
@@ -115,28 +132,40 @@ class CodesScreenState1 extends State<CodesScreen> {
           children: [
             image1,
             pw.SizedBox(width: 6),
-            pw.Column(
-                mainAxisAlignment: pw.MainAxisAlignment.center,
-                crossAxisAlignment: pw.CrossAxisAlignment.center,
+            pw.Stack(
               children: [
-                pw.SizedBox(
-                  height: 48,
-                  width: 48,
-                  child: pw.ConstrainedBox(
-                    constraints: pw.BoxConstraints.expand(),
-                    child: pw.FittedBox(
-                      child: pw.BarcodeWidget(
-                        width: 1,
-                        height: 1,
-                        color: PdfColor.fromHex("#000000"),
-                        barcode: pw.Barcode.qrCode(),
-                        data: "test qr",
+                pw.Column(
+                    mainAxisAlignment: pw.MainAxisAlignment.center,
+                    crossAxisAlignment: pw.CrossAxisAlignment.center,
+                    children: [
+                      pw.SizedBox(
+                        height: 48,
+                        width: 48,
+                        child: pw.ConstrainedBox(
+                          constraints: const pw.BoxConstraints.expand(),
+                          child: pw.FittedBox(
+                            child: pw.BarcodeWidget(
+                              width: 1,
+                              height: 1,
+                              color: PdfColor.fromHex("#000000"),
+                              barcode: pw.Barcode.qrCode(),
+                              data: "https://govinh.com/${code.value}",
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                      pw.SizedBox(height: 4),
+                      pw.Text("Quét mã\nđổi điểm", style: pw.TextStyle(fontSize: 10))
+                    ]
                 ),
-                pw.SizedBox(height: 4),
-                pw.Text("Quét mã\nđổi điểm", style: pw.TextStyle(fontSize: 10))
+                pw.Align(
+                  alignment: pw.Alignment.topRight,
+                  child: pw.Container(
+                    padding: const pw.EdgeInsets.only(left: 48, top: 8),
+                    child: pw.Text(code.id,style: const pw.TextStyle(fontSize: 8), textAlign: pw.TextAlign.end)
+                  )
+                )
+
               ]
             )
           ],
