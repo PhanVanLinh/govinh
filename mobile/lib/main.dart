@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
+import 'package:govinh/codes_screen.dart';
 import 'package:govinh/home_screen.dart';
 import 'package:govinh/redeem_screen.dart';
 import 'package:govinh/redeem_success_screen.dart';
@@ -28,6 +29,10 @@ final _router = GoRouter(
     GoRoute(
       path: '/a',
       builder: (context, state) => const RedeemScreen(id: '123',),
+    ),
+    GoRoute(
+      path: '/codes',
+      builder: (context, state) => const CodesScreen(id: '123',),
     ),
     GoRoute(
       path: '/redeem/:id',
