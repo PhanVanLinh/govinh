@@ -6,7 +6,6 @@ import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:dio/dio.dart';
-import 'dart:convert';
 
 class CodesScreen extends StatefulWidget {
   final int? from;
@@ -24,14 +23,13 @@ class CodesScreen extends StatefulWidget {
 class CodesScreenState extends State<CodesScreen> {
   @override
   Widget build(BuildContext context) {
-    if(widget.adminCode.isEmpty) {
+    if (widget.adminCode.isEmpty) {
       return const Scaffold(
-        body: Column(
-          children: [
-            Text("No permission"),
-          ],
-        )
-      );
+          body: Column(
+        children: [
+          Text("No permission"),
+        ],
+      ));
     }
     return Scaffold(
       body: Container(
@@ -54,67 +52,60 @@ class CodesScreenState extends State<CodesScreen> {
   }
 
   Future<Uint8List> generateResume(PdfPageFormat format) async {
-    final doc = pw.Document(title: 'Code', author: 'David PHAM-VAN');
+    final doc = pw.Document(title: 'Code', author: 'Phan Van Linh');
     final dio = Dio();
     final response = await dio.get('https://mocki.io/v1/5b848dc4-ef95-451d-9f22-d6d1aadab625');
 
     // Extract items list and parse it into a List<Code>
-    List<Code> codes = (response.data['items'] as List<dynamic>)
-        .map((item) => Code.fromJson(item))
-        .toList();
-
-    // Print the parsed data
-    for (var code in codes) {
-    print('ID: ${code.id}, Random String: ${code.value}');
-    }
+    List<Code> codes = (response.data['items'] as List<dynamic>).map((item) => Code.fromJson(item)).toList();
 
     final img = await rootBundle.load('assets/images/logo.png');
     final imageBytes = img.buffer.asUint8List();
     pw.Image image1 = pw.Image(pw.MemoryImage(imageBytes), width: 120, height: 120);
 
+    List<List<pw.Widget>> pages = List.empty(growable: true);
     List<pw.Widget> children = List.empty(growable: true);
     var i = 0;
-    while(i < 18) {
-      children.add(buildItem(image1, codes[i]),);
+    while (i < codes.length - 1) {
+      children.add(
+        buildItem(image1, codes[i]),
+      );
       i++;
+      final realI = i % 18;
+      if (realI % 18 == 0) {
+        pages.add(children);
+        children = List.empty(growable: true);
+      }
     }
-
-    doc.addPage(
-      pw.Page(
-        pageTheme: pw.PageTheme(
-          pageFormat: format.copyWith(
-            marginBottom: 0,
-            marginLeft: 0,
-            marginRight: 0,
-            marginTop: 0,
+    for (var page in pages) {
+      doc.addPage(
+        pw.Page(
+          pageTheme: pw.PageTheme(
+            pageFormat: format.copyWith(
+              marginBottom: 0,
+              marginLeft: 0,
+              marginRight: 0,
+              marginTop: 0,
+            ),
+            orientation: pw.PageOrientation.portrait,
+            theme: pw.ThemeData.withFont(
+              base: await PdfGoogleFonts.openSansRegular(),
+              bold: await PdfGoogleFonts.openSansBold(),
+            ),
           ),
-          orientation: pw.PageOrientation.portrait,
-          theme: pw.ThemeData.withFont(
-            base: await PdfGoogleFonts.openSansRegular(),
-            bold: await PdfGoogleFonts.openSansBold(),
-          ),
+          build: (context) => pw.Padding(
+              padding: const pw.EdgeInsets.only(right: 0),
+              child: pw.GridView(
+                  crossAxisCount: 3,
+                  direction: pw.Axis.vertical,
+                  // crossAxisSpacing: 10,
+                  // mainAxisSpacing: 10,
+                  childAspectRatio: 0.7,
+                  // padding: const pw.EdgeInsets.all(10),
+                  children: page)),
         ),
-        build: (context) => pw.Padding(
-            padding: const pw.EdgeInsets.only(right: 0),
-            child: pw.GridView(
-                crossAxisCount: 3,
-                direction: pw.Axis.vertical,
-                // crossAxisSpacing: 10,
-                // mainAxisSpacing: 10,
-                childAspectRatio: 0.7,
-                // padding: const pw.EdgeInsets.all(10),
-                children: children)),
-      ),
-    );
-    // final profileImage = pw.MemoryImage(
-    //   (await rootBundle.load('assets/profile.jpg')).buffer.asUint8List(),
-    // );
-    doc.addPage(
-      pw.Page(
-        build: (pw.Context context) => pw.Text('Hello World!'),
-      ),
-    );
-
+      );
+    }
     return doc.save();
   }
 
@@ -122,8 +113,8 @@ class CodesScreenState extends State<CodesScreen> {
     return pw.Container(
         alignment: pw.Alignment.center,
         decoration: pw.BoxDecoration(
-            border: pw.Border.all(
-          color: PdfColors.black,
+          border: pw.Border.all(
+            color: PdfColors.black,
           ),
           // color: PdfColor(1, 0, 0)
         ),
@@ -132,42 +123,37 @@ class CodesScreenState extends State<CodesScreen> {
           children: [
             image1,
             pw.SizedBox(width: 6),
-            pw.Stack(
-              children: [
-                pw.Column(
-                    mainAxisAlignment: pw.MainAxisAlignment.center,
-                    crossAxisAlignment: pw.CrossAxisAlignment.center,
-                    children: [
-                      pw.SizedBox(
-                        height: 48,
-                        width: 48,
-                        child: pw.ConstrainedBox(
-                          constraints: const pw.BoxConstraints.expand(),
-                          child: pw.FittedBox(
-                            child: pw.BarcodeWidget(
-                              width: 1,
-                              height: 1,
-                              color: PdfColor.fromHex("#000000"),
-                              barcode: pw.Barcode.qrCode(),
-                              data: "https://govinh.com/${code.value}",
-                            ),
+            pw.Stack(children: [
+              pw.Column(
+                  mainAxisAlignment: pw.MainAxisAlignment.center,
+                  crossAxisAlignment: pw.CrossAxisAlignment.center,
+                  children: [
+                    pw.SizedBox(
+                      height: 48,
+                      width: 48,
+                      child: pw.ConstrainedBox(
+                        constraints: const pw.BoxConstraints.expand(),
+                        child: pw.FittedBox(
+                          child: pw.BarcodeWidget(
+                            width: 1,
+                            height: 1,
+                            color: PdfColor.fromHex("#000000"),
+                            barcode: pw.Barcode.qrCode(),
+                            data: "https://govinh.com/${code.value}",
                           ),
                         ),
                       ),
-                      pw.SizedBox(height: 4),
-                      pw.Text("Quét mã\nđổi điểm", style: pw.TextStyle(fontSize: 10))
-                    ]
-                ),
-                pw.Align(
+                    ),
+                    pw.SizedBox(height: 4),
+                    pw.Text("Quét mã", style: const pw.TextStyle(fontSize: 10))
+                    // pw.Text("Quét mã\ntích điểm", style: const pw.TextStyle(fontSize: 10))
+                  ]),
+              pw.Align(
                   alignment: pw.Alignment.topRight,
                   child: pw.Container(
-                    padding: const pw.EdgeInsets.only(left: 48, top: 8),
-                    child: pw.Text(code.id,style: const pw.TextStyle(fontSize: 8), textAlign: pw.TextAlign.end)
-                  )
-                )
-
-              ]
-            )
+                      padding: const pw.EdgeInsets.only(left: 48, top: 8),
+                      child: pw.Text(code.id, style: const pw.TextStyle(fontSize: 8), textAlign: pw.TextAlign.end)))
+            ])
           ],
         ));
   }
