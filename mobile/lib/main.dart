@@ -40,7 +40,7 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: '/redeem/success/:phone',
-      builder: (context, state) =>  RedeemSuccessScreen(id: state.pathParameters['phone']),
+      builder: (context, state) =>  RedeemSuccessScreen(phone: state.pathParameters['phone']),
     ),
   ],
 );

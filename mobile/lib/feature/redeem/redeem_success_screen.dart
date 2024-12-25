@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:govinh/lt.dart';
+import 'package:govinh/styles/gv_appbar.dart';
+import 'package:govinh/styles/gv_textstyle.dart';
 
 class RedeemSuccessScreen extends StatefulWidget {
-  final String? id;
-  const RedeemSuccessScreen({super.key, required this.id});
+  final String? phone;
+  const RedeemSuccessScreen({super.key, required this.phone});
 
   @override
   State<StatefulWidget> createState() {
@@ -11,69 +15,65 @@ class RedeemSuccessScreen extends StatefulWidget {
   }
 }
 
-class RedeemSuccessScreenState extends State<RedeemSuccessScreen> {
+class RedeemSuccessScreenState extends State<RedeemSuccessScreen> with TickerProviderStateMixin {
+  late TabController _tabController;
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("widget.title12"),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Success Icon
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.teal,
-                  shape: BoxShape.circle,
-                ),
-                padding: EdgeInsets.all(20),
-                child: Icon(
-                  Icons.check_circle_outline,
-                  size: 80,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 24),
-              // Success Text
-              Text(
-                'Success!',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal.shade800,
-                ),
-              ),
-              SizedBox(height: 16),
-              // Subtitle
-              Text(
-                'Your action was completed successfully.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.teal.shade600,
-                ),
-              ),
-              SizedBox(height: 32),
-              // Continue Button
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // Go back to the previous screen
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+      appBar: GVAppBar(title: Lt.app),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, value) {
+          return [
+            SliverToBoxAdapter(
+                child: Column(children: [
+                  Gap(20),
+                  CircleAvatar(
+                    // decoration: BoxDecoration(
+                    //   color: Colors.teal,
+                    //   shape: BoxShape.circle,
+                    // ),
+                    radius: 60,
+                    child: Text(widget.phone ?? "", style: GVTextStyle.semiBold18,),
                   ),
-                ),
-                child: Text(
-                  'Continue',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Gap(8),
+                  Text("100 points", style: GVTextStyle.semiBold18,),
+                ],)
+            ),
+            SliverToBoxAdapter(
+              child: TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(icon: Icon(Icons.redeem), text: "Đổi thưởng",),
+                  Tab(icon: Icon(Icons.history), text: "Lịch sử"),
+                ],
+              ),
+            ),
+          ];
+        },
+        body: Container(
+          child: TabBarView(
+            controller: _tabController,
+            children: <Widget>[
+              ListView.separated(
+                separatorBuilder: (i, _) {
+                  return Divider();
+                },
+                itemBuilder: (i, _) {
+                  return RewardItem();
+                },
+                itemCount: 10,
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    Text("b")
+                  ],
                 ),
               ),
             ],
@@ -82,6 +82,18 @@ class RedeemSuccessScreenState extends State<RedeemSuccessScreen> {
       ),
     );
   }
-
 }
 
+class RewardItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Image(image: AssetImage('assets/images/logo.png'), height: 50,),
+        Text("data"),
+        Expanded(child: SizedBox()),
+        Text("100")
+      ],
+    );
+  }
+}

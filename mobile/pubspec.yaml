@@ -44,6 +44,7 @@ dependencies:
   printing: ^5.13.4
   dio: ^5.7.0
   flutter_bloc: ^8.1.6
+  fpdart: ^1.1.1
 
 dev_dependencies:
   flutter_test:

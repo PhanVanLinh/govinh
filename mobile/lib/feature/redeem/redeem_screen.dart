@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:govinh/feature/redeem/redeem_screen_cubit.dart';
 import 'package:govinh/lt.dart';
+import 'package:govinh/main.dart';
 import 'package:govinh/styles/gv_alert.dart';
 import 'package:govinh/styles/gv_appbar.dart';
 import 'package:govinh/styles/gv_button.dart';
@@ -31,7 +33,10 @@ class RedeemScreenState extends State<RedeemScreen> {
       create: (_) => cubit,
       child: BlocConsumer<RedeemCubit, RedeemUI>(
         listener: (context, state) {
-          // do stuff here based on BlocA's state
+          final action = state.action;
+          if(action is GoSuccessAction) {
+            context.go("/redeem/success/${action.phoneNumber}");
+          }
         },
         builder: (context, ui) {
           return Scaffold(
