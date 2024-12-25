@@ -26,7 +26,7 @@ class RedeemSuccessScreenState extends State<RedeemSuccessScreen> with TickerPro
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GVAppBar(title: Lt.app),
+      appBar: GVAppBar(title: Lt.banhcanh),
       body: NestedScrollView(
         headerSliverBuilder: (context, value) {
           return [

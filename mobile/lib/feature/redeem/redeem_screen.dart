@@ -41,7 +41,7 @@ class RedeemScreenState extends State<RedeemScreen> {
         builder: (context, ui) {
           return Scaffold(
             appBar: const GVAppBar(
-              title: Lt.app,
+              title: Lt.banhcanh,
             ),
             body: Padding(
               padding: const EdgeInsets.all(16.0),
