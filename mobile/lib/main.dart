@@ -3,8 +3,8 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:govinh/codes_screen.dart';
 import 'package:govinh/home_screen.dart';
-import 'package:govinh/redeem_screen.dart';
-import 'package:govinh/redeem_success_screen.dart';
+import 'package:govinh/feature/redeem/redeem_screen.dart';
+import 'package:govinh/feature/redeem/redeem_success_screen.dart';
 import 'package:govinh/theme_data.dart';
 
 void main() {
@@ -27,10 +27,6 @@ final _router = GoRouter(
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
-      path: '/a',
-      builder: (context, state) => const RedeemScreen(id: '123',),
-    ),
-    GoRoute(
       path: '/codes/:from/:to',
       builder: (context, state) =>  CodesScreen(
         from: int.tryParse(state.pathParameters['from'] ?? ""),
@@ -40,7 +36,7 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: '/redeem/:id',
-      builder: (context, state) =>  RedeemScreen(id: state.pathParameters['id']),
+      builder: (context, state) =>  RedeemScreen(code: state.pathParameters['id']),
     ),
     GoRoute(
       path: '/redeem/success/:phone',

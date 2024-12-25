@@ -5,12 +5,17 @@ import 'package:govinh/styles/gv_textstyle.dart';
 
 class GVTextFormField extends StatelessWidget {
 
+  final TextEditingController controller;
+
+  const GVTextFormField({super.key, required this.controller});
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextFormField(
+        controller: controller,
         decoration: InputDecoration(
-          hintText: "Nhập số điện thoại",
+          hintText: "Số điện thoại",
           contentPadding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 10.0),
           // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0),
@@ -26,7 +31,7 @@ class GVTextFormField extends StatelessWidget {
         autofillHints: const [
           AutofillHints.telephoneNumber,
         ],
-        textAlign: TextAlign.center,
+        textAlign: TextAlign.start,
         style: GVTextStyle.semiBold22.copyWith(letterSpacing: 2.0),
         validator: (value) {
           if (value == null || value.isEmpty) {
