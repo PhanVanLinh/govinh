@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:govinh/feature/redeem/redeem_usecase.dart';
+import 'package:govinh/feature/redeem/usecase/redeem_usecase.dart';
 
 class RedeemAction {}
 class GoSuccessAction extends RedeemAction {

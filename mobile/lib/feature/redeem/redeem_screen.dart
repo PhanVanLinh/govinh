@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:govinh/feature/redeem/redeem_screen_cubit.dart';
+import 'package:govinh/feature/redeem/bloc/redeem_screen_cubit.dart';
 import 'package:govinh/lt.dart';
 import 'package:govinh/main.dart';
 import 'package:govinh/styles/gv_alert.dart';
