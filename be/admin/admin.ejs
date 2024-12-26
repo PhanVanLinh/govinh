@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin: Users with Codes and Rewards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            margin: 0;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: #fff;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        ul li {
+            padding: 4px 0;
+        }
+
+        .container {
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+    </style>
+</head>
+<body>
+<h1>Admin: Users with Codes and Rewards</h1>
+<div class="container">
+    <table id="userTable">
+        <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Phone</th>
+            <th>Codes</th>
+            <th>Rewards</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% users.forEach(user => { %>
+            <tr>
+                <td><%= user.user_id %></td>
+                <td><%= user.phone %></td>
+                <td>
+                    <% if (user.codes && user.codes.length > 0) { %>
+                        <ul>
+                            <% user.codes.forEach(code => { %>
+                                <% if (code.code !== null) { %>
+                                    <li>
+                                        Code: <%= code.code %> (Used <%= code.usage_count %> times)
+                                    </li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    <% } else { %>
+                        <span>No codes used</span>
+                    <% } %>
+                </td>
+                <td>
+                    <% if (user.rewards && user.rewards.length > 0) { %>
+                        <ul>
+                            <% user.rewards.forEach(reward => { %>
+                                <% if (reward.reward !== null) { %>
+                                    <li>
+                                        Reward: <%= reward.reward %> (Used <%= reward.usage_count %> times)
+                                    </li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    <% } else { %>
+                        <span>No rewards earned</span>
+                    <% } %>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

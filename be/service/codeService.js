@@ -1,43 +1,113 @@
 const db = require('../database/db')
 
-const addCode = async (req, res) => {
-  const {code, point} = req.body
-
-  if (!code || !point) {
-    return res.status(400).json({error: 'Code and point are required'})
+const generateRandomCode = (length) => {
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  let code = ''
+  for (let i = 0; i < length; i++) {
+    code += characters.charAt(Math.floor(Math.random() * characters.length))
   }
-
-  const query = `INSERT INTO codes (code, point)
-                 VALUES (?, ?)`
-  try {
-    const [result] = await db.execute(query, [code, point])
-    return res.status(201).json({
-      message: 'Code created',
-      code: {id: result.insertId, code, point, is_used: false},
-    })
-  } catch (err) {
-    if (err.code === 'ER_DUP_ENTRY') {
-      return res.status(409).json({error: 'Code already exists'})
-    }
-    return res.status(500).json({error: 'Internal server error'})
-  }
+  return code
 }
 
-const listCodes = async (req, res) => {
-  const query = `SELECT *
-                 FROM codes`
+const addCode = async (shop_id, count = 50) => {
+  if (!shop_id) {
+    throw new Error('Shop ID is required')
+  }
+
+  const queryShop = `SELECT *
+                     FROM shops
+                     WHERE id = ?`
+  const [resultShop] = await db.execute(queryShop, [shop_id])
+  if (resultShop.length === 0) {
+    throw new Error('Shop not found')
+  }
+
+  const codes = []
+  for (let i = 1; i <= count; i++) {
+    const code = generateRandomCode(Math.floor(Math.random() * (8 - 5 + 1)) + 5)
+    const point = i % 10 === 0 ? 20 : 10
+    codes.push([code, point, shop_id])
+  }
+
+  const query = `INSERT INTO codes (code, point, shop_id)
+                 VALUES ?`
+  await db.query(query, [codes])
+
+  return codes.map(([code, point]) => ({code, point, is_used: false}))
+};
+
+
+const addCodeAPI = async (req, res) => {
+  const {shop_id} = req.body
+
+  if (!shop_id) {
+    return res.status(400).json({error: 'Shop ID is required'})
+  }
 
   try {
-    const [codes] = await db.execute(query)
+    const generatedCodes = await addCode(shop_id)
+    return res.status(201).json({
+      message: 'Codes created successfully',
+      generatedCodes,
+    })
+  } catch (err) {
+    if (err.message === 'Shop not found') {
+      return res.status(404).json({error: err.message})
+    }
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({error: 'One or more codes already exist'})
+    }
+    console.error(err)
+    return res.status(500).json({error: 'Internal server error', details: err.message})
+  }
+};
+
+const listCodes = async (req, res) => {
+  const {key, start, end, shop} = req.query
+
+  const API_KEY = process.env.API_KEY
+  if (key !== API_KEY) {
+    return res.status(403).json({error: 'Invalid API key'})
+  }
+
+  if (!start || !end || isNaN(start) || isNaN(end) || start >= end) {
+    return res.status(400).json({error: 'Invalid start or end range'})
+  }
+
+  if (!shop) {
+    return res.status(400).json({error: 'shop_id is required'})
+  }
+
+  const startId = parseInt(start)
+  const endId = parseInt(end)
+  const rangeSize = endId - startId + 1
+
+  const query = `SELECT *
+                 FROM codes
+                 WHERE id >= ?
+                   AND id <= ?
+                   AND shop_id = ?`
+  try {
+    const [codes] = await db.execute(query, [startId, endId, shop])
+
+    if (codes.length < rangeSize) {
+      const neededCodes = rangeSize - codes.length
+      console.log(`Generating ${neededCodes} additional codes.`)
+      await addCode(shop, neededCodes) // Call the reusable `addCode` function
+    }
+
+    const [updatedCodes] = await db.execute(query, [startId, endId, shop])
 
     return res.status(200).json({
       message: 'Success',
-      codes,
+      codes: updatedCodes,
     })
   } catch (err) {
-    return res.status(500).json({error: 'Internal server error'})
+    console.error(err)
+    return res.status(500).json({error: 'Internal server error', details: err.message})
   }
-}
+};
+
 
 const updateCode = async (req, res) => {
   const {id} = req.params
@@ -127,4 +197,5 @@ module.exports = {
   updateCode,
   deleteCode,
   getCodeById,
+  addCodeAPI
 }

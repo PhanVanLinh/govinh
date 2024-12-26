@@ -4,7 +4,7 @@ const rewardService = require('./service/rewardService')
 const userRewardService = require('./service/userRewardService')
 const codeService = require('./service/codeService')
 const userCodeService = require('./service/userCodeService')
-
+const shopService = require('./service/shopService')
 const router = express.Router()
 
 //users API
@@ -25,7 +25,7 @@ router.get('/user-rewards/user/:userId', userRewardService.getUserRewardsByUserI
 router.get('/user-rewards/reward/:rewardId', userRewardService.getUserRewardsByRewardId);
 
 // codes API
-router.post('/codes', codeService.addCode)
+router.post('/codes', codeService.addCodeAPI)
 router.get('/codes', codeService.listCodes)
 router.get('/codes/:id', codeService.getCodeById)
 router.patch('/codes/:id', codeService.updateCode)
@@ -35,5 +35,8 @@ router.post('/user-codes', userCodeService.addUserCode)
 router.get('/user-codes', userCodeService.listUserCodes)
 router.get('/user-codes/:id', userCodeService.getUserCodeById)
 router.delete('/user-codes/:id', userCodeService.deleteUserCode)
+
+router.post('/shops', shopService.addShop)
+router.get('/shops', shopService.listShops)
 
 module.exports = router

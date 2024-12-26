@@ -1,13 +1,20 @@
 const db = require('../database/db')
 
 const addReward = async (req, res) => {
-  const {name, value} = req.body
-  if (!name || !value) return res.status(400).json({error: 'name or value are required'})
-  const query = `INSERT INTO rewards (name, value)
-                 VALUES (?, ?);`
+  const {name, value, shop_id} = req.body
+  if (!name || !value || !shop_id) return res.status(400).json({error: 'name or value or shop_id are required'})
+  const query = `INSERT INTO rewards (name, value, shop_id)
+                 VALUES (?, ?, ?);`
   try {
-    const [result] = await db.execute(query, [name, value])
-    return res.status(201).json({message: 'Reward created', reward: {id: result.insertId, name: name, value: value}})
+    const queryShop = `SELECT *
+                 FROM shops
+                 WHERE id = ?`
+    const [resultShop] = await db.execute(queryShop, [shop_id])
+    if (resultShop.length === 0) {
+      return res.status(404).json({error: 'Shop not found'})
+    }
+    const [result] = await db.execute(query, [name, value, shop_id])
+    return res.status(201).json({message: 'Reward created', reward: {id: result.insertId, name: name, value: value, shop_id}})
   } catch (e) {
     if (e.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({error: 'Reward already exists'})
@@ -22,7 +29,6 @@ const listRewards = async (req, res) => {
                  FROM rewards;`
   try {
     const [result] = await db.execute(query)
-    console.log(result)
     return res.status(200).json({message: 'Success', rewards: result})
   } catch (e) {
     return res.status(500).json({error: 'Internal server error'})
@@ -65,7 +71,6 @@ const updateReward = async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({error: 'Reward not found'})
     }
-    console.log(result)
     return res.status(200).json({message: 'Success'})
   } catch (e) {
     if (e.code === 'ER_DUP_ENTRY') {

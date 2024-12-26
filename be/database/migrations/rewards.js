@@ -2,7 +2,10 @@ require('dotenv').config();
 const db = require('../db.js');
 
 const createRewardsTable = `
-    CREATE TABLE IF NOT EXISTS rewards (id INT AUTO_INCREMENT PRIMARY KEY,name VARCHAR(255) NOT NULL UNIQUE, value INT NOT NULL DEFAULT 0,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    CREATE TABLE IF NOT EXISTS rewards (id INT AUTO_INCREMENT PRIMARY KEY,name VARCHAR(255) NOT NULL UNIQUE, value INT NOT NULL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        shop_id INT NOT NULL,
+        FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE
         );`;
 const createUserRewardTable = `
     CREATE TABLE IF NOT EXISTS user_reward (id INT AUTO_INCREMENT PRIMARY KEY,

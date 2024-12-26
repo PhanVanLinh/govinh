@@ -43,20 +43,38 @@ const addUserCode = async (req, res) => {
 }
 
 const listUserCodes = async (req, res) => {
-  const query = `SELECT *
-                 FROM user_code`
+  const {phone} = req.query
+
+  if (!phone) {
+    return res.status(400).json({error: 'Phone number is required'})
+  }
 
   try {
-    const [userCodes] = await db.execute(query)
+    const queryUser = `SELECT id
+                       FROM users
+                       WHERE phone = ?`
+    const [users] = await db.execute(queryUser, [phone])
+
+    if (users.length === 0) {
+      return res.status(404).json({error: 'User not found'})
+    }
+
+    const userId = users[0].id
+
+    const queryUserCodes = `SELECT *
+                            FROM user_code
+                            WHERE user_id = ?`
+    const [userCodes] = await db.execute(queryUserCodes, [userId])
 
     return res.status(200).json({
       message: 'Success',
       userCodes,
-    })
+    });
   } catch (err) {
-    return res.status(500).json({error: 'Internal server error'})
+    console.error(err)
+    return res.status(500).json({error: 'Internal server error', details: err.message})
   }
-}
+};
 
 const getUserCodeById = async (req, res) => {
   const {id} = req.params

@@ -7,7 +7,9 @@ const codesTable = `
                                          code VARCHAR(255) NOT NULL UNIQUE,
         point INT NOT NULL,
         is_used BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        shop_id INT NOT NULL,
+        FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE
         );
 `;
 const createUserCodeTable = `CREATE TABLE IF NOT EXISTS user_code (
