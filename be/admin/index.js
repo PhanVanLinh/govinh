@@ -4,6 +4,8 @@ const getUsersWithCodesAndRewards = async (req, res) => {
   const query = `
       SELECT u.id                                      AS user_id,
              u.phone,
+             u.score,
+             u.current_score,
              (SELECT JSON_ARRAYAGG(
                              JSON_OBJECT(
                                      'code', sub_c.code,

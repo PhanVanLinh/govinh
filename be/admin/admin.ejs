@@ -72,6 +72,8 @@
         <tr>
             <th>User ID</th>
             <th>Phone</th>
+            <th>Total score</th>
+            <th>Current score</th>
             <th>Codes</th>
             <th>Rewards</th>
         </tr>
@@ -81,6 +83,8 @@
             <tr>
                 <td><%= user.user_id %></td>
                 <td><%= user.phone %></td>
+                <td><%= user.score %></td>
+                <td><%= user.current_score %></td>
                 <td>
                     <% if (user.codes && user.codes.length > 0) { %>
                         <ul>

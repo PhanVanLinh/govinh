@@ -16,10 +16,12 @@ const createUserCodeTable = `CREATE TABLE IF NOT EXISTS user_code (
                                                                       id INT AUTO_INCREMENT PRIMARY KEY,
                                                                       user_id INT NOT NULL,
                                                                       code_id INT NOT NULL,
+                                                                      shop_id INT NOT NULL,
                                                                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                                                      UNIQUE KEY unique_user_code (user_id, code_id),
+                                                                      UNIQUE KEY unique_user_code (user_id, code_id, shop_id),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    FOREIGN KEY (code_id) REFERENCES codes (id) ON DELETE CASCADE
+    FOREIGN KEY (code_id) REFERENCES codes (id) ON DELETE CASCADE,
+    FOREIGN KEY (shop_id) REFERENCES shops (id) ON DELETE CASCADE
     );
 `;
 
