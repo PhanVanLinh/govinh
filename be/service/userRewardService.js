@@ -35,11 +35,15 @@ const addUserReward = async (req, res) => {
     let updateScore = currentScore - rewardValue
     const updateCurrentScoreQuery = `UPDATE users SET current_score = ? WHERE id = ?`
     await db.execute(updateCurrentScoreQuery, [updateScore, userId])
+    const scoreQuery = `INSERT INTO scores (user_id, score)
+                        VALUES (?, ?);`
+    await db.execute(scoreQuery, [userId, -rewardValue])
     return res.status(201).json({
       message: 'Created',
       reward: {id: insertResult.insertId, rewardId, userId, remainingScore: updateScore},
     })
   } catch (e) {
+    console.error(e)
     if (e.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({error: 'User-Reward already exists'})
     }

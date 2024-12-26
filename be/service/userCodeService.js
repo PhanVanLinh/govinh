@@ -10,7 +10,7 @@ const addUserCode = async (req, res) => {
   const validateUserQuery = `SELECT id
                              FROM users
                              WHERE id = ?`
-  const validateCodeQuery = `SELECT id
+  const validateCodeQuery = `SELECT *
                              FROM codes
                              WHERE id = ?`
 
@@ -29,12 +29,19 @@ const addUserCode = async (req, res) => {
     const insertQuery = `INSERT INTO user_code (user_id, code_id)
                          VALUES (?, ?)`
     const [result] = await db.execute(insertQuery, [user_id, code_id])
-
+    const scoreQuery = `INSERT INTO scores (user_id, score) VALUES (?, ?);`
+    const point = codeResult[0].point
+    await db.execute(scoreQuery, [user_id, point])
     return res.status(201).json({
       message: 'User-Code relationship created',
       userCode: {id: result.insertId, user_id, code_id},
+      score: {
+        user_id: user_id,
+        score: point
+      }
     })
   } catch (err) {
+    console.error('Error creating:', err)
     if (err.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({error: 'User-Code relationship already exists'})
     }

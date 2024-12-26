@@ -16,10 +16,17 @@ const addUser = async (req, res) => {
   }
 
   const query = `INSERT INTO users (phone, score, current_score) VALUES (?, ?, ?);`
-  // score_history user_id, point
   try {
     const [result] = await db.execute(query, [phone, point, point])
-    return res.status(201).json({message: 'User created', user: {id: result.insertId, phone: phone}})
+    const queryScore = `INSERT INTO scores (user_id, score)
+                        VALUES (?, ?);`
+
+    await db.execute(queryScore, [result.insertId, point])
+    return res.status(201).json({
+      message: 'User created',
+      user: {id: result.insertId, phone: phone},
+      score: {user_id: result.insertId, score: point}
+    })
   } catch (err) {
     if (err.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({error: 'User already exists'})

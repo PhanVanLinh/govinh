@@ -9,7 +9,8 @@
     "migrate-shops": "node database/migrations/shops.js",
     "migrate-users": "node database/migrations/users.js",
     "migrate-rewards": "node database/migrations/rewards.js",
-    "migrate-codes": "node database/migrations/codes.js"
+    "migrate-codes": "node database/migrations/codes.js",
+    "migrate-scores": "node database/migrations/scores.js"
   },
   "keywords": [],
   "author": "",
