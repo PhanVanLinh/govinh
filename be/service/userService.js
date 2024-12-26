@@ -54,7 +54,7 @@ const getUser = async (req, res) => {
                         FROM scores
                         WHERE user_id = ?;`
     const [scoreResult] = await db.execute(scoreQuery, [userId])
-    return res.status(200).json({user: result[0], score: scoreResult[0]})
+    return res.status(200).json({user: result[0], scores: scoreResult})
   } catch (e) {
     console.error('Error: ', e)
     return res.status(500).json({error: 'Internal server error'})
