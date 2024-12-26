@@ -35,7 +35,7 @@ class HomeScreenState extends State<HomeScreen> {
     },
     builder: (context, ui) {
       return Scaffold(
-        appBar: GVAppBar(
+        appBar: const GVAppBar(
           title: Lt.app,
         ),
         body: GridView.count(
@@ -46,11 +46,11 @@ class HomeScreenState extends State<HomeScreen> {
             final shop = ui.shops[index];
             return GestureDetector(
               onTap: () {
-                context.go(shop.slug);
+                context.go("/redeem/${shop.slug}/empty");
               },
               child: Container(
                 color: Colors.blue,
-                child: Center(child: Text('Item ${shop.name}')),
+                child: Center(child: Text(shop.name)),
               ),
             );
           }),

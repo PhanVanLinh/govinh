@@ -6,7 +6,6 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:govinh/feature/redeem/bloc/redeem_screen_cubit.dart';
 import 'package:govinh/lt.dart';
-import 'package:govinh/main.dart';
 import 'package:govinh/styles/gv_alert.dart';
 import 'package:govinh/styles/gv_appbar.dart';
 import 'package:govinh/styles/gv_button.dart';
@@ -34,10 +33,10 @@ class RedeemScreenState extends State<RedeemScreen> {
       child: BlocConsumer<RedeemCubit, RedeemUI>(
         listener: (context, state) {
           final action = state.action;
-          if(action is GoSuccessAction) {
+          if (action is GoSuccessAction) {
             context.go("/redeem/success/${action.phoneNumber}");
           }
-        },
+      },
         builder: (context, ui) {
           return Scaffold(
             appBar: const GVAppBar(
@@ -59,12 +58,19 @@ class RedeemScreenState extends State<RedeemScreen> {
                         .of(context)
                         .textTheme
                         .headlineLarge,),
-                    // Text(Lt.app, style: Theme.of(context).textTheme.headlineMedium,),
 
-                    const Gap(32),
+                    const GVText.hint(Lt.enterYourPhoneToReceiveReward1),
+                    // Text(Lt.app, style: Theme.of(context).textTheme.headlineMedium,),
+                    const Gap(8),
                     GVTextFormField(
                       // labelText: "A",
                       controller: phoneTextEditingController,
+                    ),
+                    const Gap(16),
+                    Text(Lt.feedbackOptional),
+                    TextField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
                     ),
                     const GVText.hint(Lt.enterYourPhoneToReceiveReward),
                     const Gap(16),
