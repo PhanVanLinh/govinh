@@ -1,16 +1,18 @@
 const db = require('../database/db')
 const addShop = async (req, res) => {
-  let {name} = req.body
+  let {name, slug} = req.body
 
   if (!name) {
     return res.status(400).json({error: 'Name is required'})
   }
+  if (!slug) {
+      return res.status(400).json({error: 'Slug is required'})
+  }
 
-  const query = `INSERT INTO shops (name)
-                 VALUES (?);`
+  const query = `INSERT INTO shops (name,slug) VALUES (?,?);`
   try {
-    const [result] = await db.execute(query, [name])
-    return res.status(201).json({message: 'shop created', user: {id: result.insertId, name}})
+    const [result] = await db.execute(query, [name, slug])
+    return res.status(201).json({message: 'shop created', user: {id: result.insertId, name, slug}})
   } catch (err) {
     if (err.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({error: 'shop already exists'})

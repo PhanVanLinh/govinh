@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:govinh/codes_screen.dart';
@@ -7,8 +8,9 @@ import 'package:govinh/feature/redeem/redeem_screen.dart';
 import 'package:govinh/feature/redeem/redeem_success_screen.dart';
 import 'package:govinh/theme_data.dart';
 
-void main() {
+void main() async {
   usePathUrlStrategy();
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 

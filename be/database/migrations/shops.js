@@ -2,20 +2,12 @@ require('dotenv').config()
 const db = require('../db.js')
 
 const createShopsTable = `
-    CREATE TABLE IF NOT EXISTS shops
-    (
-        id
-        INT
-        AUTO_INCREMENT
-        PRIMARY
-        KEY,
-        name
-        VARCHAR
-    (
-        15
-    ) NOT NULL UNIQUE,
+    CREATE TABLE IF NOT EXISTS shops (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        slug VARCHAR(15) NOT NULL UNIQUE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
+    );
 `
 
 const migrateShopsTable = async () => {

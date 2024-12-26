@@ -46,7 +46,7 @@ class HomeScreenState extends State<HomeScreen> {
             final shop = ui.shops[index];
             return GestureDetector(
               onTap: () {
-                context.go(shop.link);
+                context.go(shop.slug);
               },
               child: Container(
                 color: Colors.blue,
