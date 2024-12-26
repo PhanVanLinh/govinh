@@ -1,5 +1,39 @@
 const db = require('../database/db')
 
+const redeem = async (req, res) => {
+  const {user_phone, code} = req.body;
+  if (!user_phone || !code) {
+    return res.status(400).json({error: 'user_phone and code are required'})
+  }
+
+  const validateUserQuery = `SELECT id
+                             FROM users
+                             WHERE phone = ?`;
+  const validateCodeQuery = `SELECT id
+                             FROM codes
+                             WHERE code = ?`;
+  const [userResult] = await db.execute(validateUserQuery, [user_phone])
+  const [codeResult] = await db.execute(validateCodeQuery, [user_phone])                           
+
+  console.log(userResult);
+  console.log(codeResult);
+  if (userResult.length === 0) {
+    return res.status(404).json({error: 'User not found'})
+  }
+
+  if (codeResult.length === 0) {
+    return res.status(404).json({error: 'Code not found'})
+  }
+  return res.status(201).json({
+    message: 'User-Code relationship created',
+    userCode: {id: result.insertId, user_id, code_id},
+    score: {
+      user_id: user_id,
+      score: point
+    }
+  })
+}
+
 const addUserCode = async (req, res) => {
   const {user_id, code_id} = req.body
 
@@ -117,4 +151,4 @@ const deleteUserCode = async (req, res) => {
   }
 }
 
-module.exports = {addUserCode, listUserCodes, getUserCodeById, deleteUserCode}
+module.exports = {redeem, addUserCode, listUserCodes, getUserCodeById, deleteUserCode}

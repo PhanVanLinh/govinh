@@ -32,6 +32,7 @@ router.get('/codes/:id', codeService.getCodeById)
 router.patch('/codes/:id', codeService.updateCode)
 router.delete('/codes/:id', codeService.deleteCode)
 
+router.post('/redeem', userCodeService.redeem)
 router.post('/user-codes', userCodeService.addUserCode)
 router.get('/user-codes', userCodeService.listUserCodes)
 router.get('/user-codes/:id', userCodeService.getUserCodeById)

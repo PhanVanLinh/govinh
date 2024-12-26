@@ -1,12 +1,13 @@
-import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:govinh/data/source/remote/service/base_client.dart';
 
 class RedeemUseCase {
-
+  BaseClient client = BaseClient();
+  
   Future<Either<Object, bool>> execute(RedeemInput input) async {
 
     return TaskEither.tryCatch(() async {
-      final dio = Dio();
+      client.post("api/user-codes/", data: {});
       // Response response = await dio.post('/test', data: {'id': 12, 'name': 'dio'});
       await Future.delayed(Duration(seconds: 2));
       return true;
