@@ -86,6 +86,7 @@ const listCodes = async (req, res) => {
                  FROM codes
                  WHERE id >= ?
                    AND id <= ?
+                   AND is_used = false
                    AND shop_id = ?`
   try {
     const [codes] = await db.execute(query, [startId, endId, shop])

@@ -32,8 +32,14 @@ const redeem = async (req, res) => {
     if (codeResult.length === 0) {
       return res.status(404).json({error: 'Code not found'})
     }
+
     const user = userResult[0]
     const codeDb = codeResult[0]
+
+    if (codeDb.is_used) {
+      return res.status(409).json({error: 'Code already used'})
+    }
+
     const insertQuery = `INSERT INTO user_code (user_id, code_id, shop_id)
                          VALUES (?, ?, ?)`
     const [result] = await db.execute(insertQuery, [user.id, codeDb.id, shop])
@@ -45,6 +51,7 @@ const redeem = async (req, res) => {
                         SET score         = ?,
                             current_score = ?
                         WHERE id = ?`
+    await db.execute(`UPDATE codes SET is_used = true WHERE id = ?`, [codeDb.id])
     await db.execute(updateUser, [user.score + point, user.current_score + point, user.id])
     return res.status(201).json({
       message: 'User-Code relationship created',
