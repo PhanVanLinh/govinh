@@ -36,4 +36,30 @@ const addUser = async (req, res) => {
   }
 }
 
-module.exports = {addUser}
+const getUser = async (req, res) => {
+  try {
+    let {phone} = req.query
+    if (!phone) {
+      return res.status(400).json({error: 'Phone number is required'})
+    }
+    const query = `SELECT *
+                   FROM users
+                   where phone = ?;`
+    const [result] = await db.execute(query, [phone])
+    if (result.length <= 0) {
+      return res.status(200).json({user: []})
+    }
+    const userId = result[0].id
+    const scoreQuery = `SELECT *
+                        FROM scores
+                        WHERE user_id = ?;`
+    const [scoreResult] = await db.execute(scoreQuery, [userId])
+    return res.status(200).json({user: result[0], score: scoreResult[0]})
+  } catch (e) {
+    console.error('Error: ', e)
+    return res.status(500).json({error: 'Internal server error'})
+  }
+
+}
+
+module.exports = {addUser, getUser}

@@ -10,6 +10,7 @@ const router = express.Router()
 //users API
 // POST
 router.post('/users', userService.addUser)
+router.get('/users', userService.getUser)
 
 //rewards API
 router.post('/rewards', rewardService.addReward)
