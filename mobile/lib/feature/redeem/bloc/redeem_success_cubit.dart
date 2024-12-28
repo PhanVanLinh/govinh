@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:govinh/data/model/redeem_history.dart';
 import 'package:govinh/data/model/reward.dart';
+import 'package:govinh/feature/redeem/usecase/get_redeem_history_usecase.dart';
 import 'package:govinh/feature/redeem/usecase/get_rewards_use_case.dart';
 
 class RedeemSuccessAction {}
@@ -31,34 +32,49 @@ class RedeemSuccessUI {
       this.error,
       this.action});
 
-  RedeemSuccessUI copyWith({RedeemSuccessAction? action}) {
+  RedeemSuccessUI copyWith({
+    bool? isLoading,
+    RedeemSuccessAction? action,
+    String? phoneNumber,
+    List<Reward>? rewards,
+    List<RedeemHistory>? redeemHistories,
+  }) {
     return RedeemSuccessUI(
-      isLoading: isLoading,
+      isLoading: isLoading ?? this.isLoading,
       error: error,
       action: action,
-      phoneNumber: phoneNumber,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       points: points,
       earnPoints: earnPoints,
-      rewards: rewards,
-      redeemHistories: redeemHistories,
+      rewards: rewards ?? this.rewards,
+      redeemHistories: redeemHistories ?? this.redeemHistories,
     );
   }
 }
 
 class RedeemSuccessCubit extends Cubit<RedeemSuccessUI> {
   GetRewardsUseCase getRewardsUseCase = GetRewardsUseCase();
+  GetReemHistoryUseCase getReemHistoryUseCase = GetReemHistoryUseCase();
 
   RedeemSuccessCubit()
       : super(RedeemSuccessUI(
           isLoading: false,
         ));
 
-  void init(String phoneNumber) async {
+  void init(String shopSlug, String phoneNumber) async {
     emit(RedeemSuccessUI(isLoading: false, phoneNumber: phoneNumber));
-    (await getRewardsUseCase.execute(GetRewardsInput())).fold((error) {
+    (await getReemHistoryUseCase.execute(GetReemHistoryInput(shopSlug, phoneNumber))).fold((error) {
 
     }, (response) {
-      emit(RedeemSuccessUI(
+      emit(state.copyWith(
+          isLoading: false,
+          phoneNumber: phoneNumber,
+          redeemHistories: response
+      ));
+    });
+    (await getRewardsUseCase.execute(GetRewardsInput())).fold((error) {
+    }, (response) {
+      emit(state.copyWith(
           isLoading: false,
           phoneNumber: phoneNumber,
           rewards: response

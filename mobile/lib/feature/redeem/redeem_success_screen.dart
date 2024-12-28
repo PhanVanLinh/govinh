@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:govinh/data/extension/date_time_util.dart';
 import 'package:govinh/data/model/redeem_history.dart';
 import 'package:govinh/data/model/reward.dart';
 import 'package:govinh/feature/redeem/bloc/redeem_success_cubit.dart';
@@ -26,7 +27,8 @@ class RedeemSuccessScreenState extends State<RedeemSuccessScreen> with TickerPro
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    cubit.init(widget.phone ?? "");
+    // TODO improve get redeem history by shopSlug
+    cubit.init("", widget.phone ?? "");
   }
 
   @override
@@ -39,6 +41,7 @@ class RedeemSuccessScreenState extends State<RedeemSuccessScreen> with TickerPro
     },
     builder: (context, ui) {
       final rewards = ui.rewards ?? [];
+      final redeemHistories = ui.redeemHistories ?? [];
       return Scaffold(
         appBar: const GVAppBar(title: Lt.banhcanh),
         body: NestedScrollView(
@@ -79,13 +82,14 @@ class RedeemSuccessScreenState extends State<RedeemSuccessScreen> with TickerPro
                   },
                   itemCount: rewards.length,
                 ),
-                Container(
-                  child: Column(
-                    children: [
-                      HistoryItem(history: RedeemHistory()),
-                      HistoryItem(history: RedeemHistory()),
-                    ],
-                  ),
+                ListView.separated(
+                  separatorBuilder: (i, _) {
+                    return Divider();
+                  },
+                  itemBuilder: (context, index) {
+                    return HistoryItem(history: redeemHistories[index]);
+                  },
+                  itemCount: redeemHistories.length,
                 ),
               ],
             ),
@@ -126,12 +130,13 @@ class HistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Row(
         children: [
-          Image(image: AssetImage('assets/images/logo.png'), height: 50,),
-          Gap(16),
-          Expanded(child: SizedBox()),
+          const Image(image: AssetImage('assets/images/logo.png'), height: 50,),
+          const Gap(16),
+          const Expanded(child: SizedBox()),
+          Text(formatUserFriendlyDate(history.createdAt))
         ],
       ),
     );

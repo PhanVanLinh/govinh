@@ -44,9 +44,9 @@ class BaseClient {
       );
       _instance._dio.options = baseOptions;
       _instance._dio.interceptors.addAll([
-        // LogInterceptor(
-        //   logPrint: (o) => debugPrint(o.toString()),
-        // ),
+        LogInterceptor(
+          logPrint: (o) => debugPrint(o.toString()),
+        ),
       ]);
     }
     return _instance;
