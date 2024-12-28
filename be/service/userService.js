@@ -2,7 +2,7 @@ const db = require('../database/db')
 const {isValidPhoneNumber} = require('libphonenumber-js')
 
 const addUser = async (req, res) => {
-  let {phone, point} = req.body
+  let {phone} = req.body
 
   if (!phone) {
     return res.status(400).json({error: 'Phone is required'})
@@ -11,9 +11,10 @@ const addUser = async (req, res) => {
     return res.status(400).json({error: 'Invalid phone number'})
   }
 
-  if (!point) {
-    point = 10
-  }
+  point = 10
+//  if (!point) {
+//    point = 10
+//  }
 
   const query = `INSERT INTO users (phone, score, current_score) VALUES (?, ?, ?);`
   try {
