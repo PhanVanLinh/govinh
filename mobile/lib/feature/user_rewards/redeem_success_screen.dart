@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:govinh/data/extension/date_time_util.dart';
 import 'package:govinh/data/model/redeem_history.dart';
 import 'package:govinh/data/model/reward.dart';
-import 'package:govinh/feature/redeem/bloc/redeem_success_cubit.dart';
+import 'package:govinh/feature/user_rewards/bloc/redeem_success_cubit.dart';
 import 'package:govinh/lt.dart';
 import 'package:govinh/styles/gv_appbar.dart';
 import 'package:govinh/styles/gv_textstyle.dart';
@@ -49,6 +49,7 @@ class RedeemSuccessScreenState extends State<RedeemSuccessScreen> with TickerPro
             return [
               SliverToBoxAdapter(
                   child: Column(children: [
+                    Text(ui.name ?? ""),
                     Gap(20),
                     CircleAvatar(
                       radius: 60,

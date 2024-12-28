@@ -14,3 +14,17 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## TODO
+Image for rewards
+Admin page for rewards (CRUD) check if can use library
+
+Rewards point is value, check to use point or code?
+
+Api user info
+- Query: phone
+- Return name, point
+
+Api POST redeem
+- Body: phone, rating, feedback
+- Return: 

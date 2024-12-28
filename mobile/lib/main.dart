@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:govinh/codes_screen.dart';
 import 'package:govinh/feature/home/home_screen.dart';
 import 'package:govinh/feature/redeem/redeem_screen.dart';
-import 'package:govinh/feature/redeem/redeem_success_screen.dart';
+import 'package:govinh/feature/user_rewards/redeem_success_screen.dart';
 import 'package:govinh/theme_data.dart';
 
 void main() async {
