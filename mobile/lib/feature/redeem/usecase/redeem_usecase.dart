@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:govinh/data/source/remote/service/base_client.dart';
+import 'package:govinh/data/source/remote/service/gv_service.dart';
 
 class RedeemUseCase {
   BaseClient client = BaseClient();
@@ -7,19 +9,22 @@ class RedeemUseCase {
   Future<Either<Object, bool>> execute(RedeemInput input) async {
 
     return TaskEither.tryCatch(() async {
-      client.post("api/user-codes/", data: {});
-      // Response response = await dio.post('/test', data: {'id': 12, 'name': 'dio'});
-      await Future.delayed(Duration(seconds: 2));
+      Response response = await client.post(GVService.redeem, data: {
+        "shop_slug": input.shopSlug,
+        "code": input.code,
+        "user_phone": input.phoneNumber,
+      });
       return true;
     }, (error, stackTrade) {
-      return error;
+      return error.toServerException();
     }).run();
   }
 }
 
 class RedeemInput {
+  final String shopSlug;
   final String phoneNumber;
   final String code;
 
-  RedeemInput({required this.phoneNumber, required this.code});
+  RedeemInput({required this.shopSlug, required this.phoneNumber, required this.code});
 }

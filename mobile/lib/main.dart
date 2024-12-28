@@ -37,8 +37,10 @@ final _router = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/redeem/:shop/:id',
-      builder: (context, state) =>  RedeemScreen(code: state.pathParameters['id']),
+      path: '/redeem/:shopSlug/:id',
+      builder: (context, state) =>  RedeemScreen(
+          shopSlug: state.pathParameters['shopSlug'],
+          code: state.pathParameters['id']),
     ),
     GoRoute(
       path: '/redeem-success/:phone',

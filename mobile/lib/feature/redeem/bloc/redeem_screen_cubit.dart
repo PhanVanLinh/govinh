@@ -29,7 +29,7 @@ class RedeemCubit extends Cubit<RedeemUI> {
 
   RedeemCubit() : super(RedeemUI(isLoading: false));
 
-  void redeem(String phoneNumber, String code) async {
+  void redeem(String shopSlug, String phoneNumber, String code) async {
     if (code.isEmpty) {
       emit(RedeemUI(isLoading: true, error: "Sai mã"));
       return;
@@ -39,7 +39,7 @@ class RedeemCubit extends Cubit<RedeemUI> {
       return;
     }
     emit(RedeemUI(isLoading: true, error: null));
-    (await redeemUseCase.execute(RedeemInput(phoneNumber: phoneNumber, code: code))).fold
+      (await redeemUseCase.execute(RedeemInput(phoneNumber: phoneNumber, code: code, shopSlug: shopSlug))).fold
       ((error) {
         emit(RedeemUI(isLoading: false, error: error.toString()));
       },

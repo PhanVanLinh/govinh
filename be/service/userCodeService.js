@@ -1,9 +1,15 @@
 const db = require('../database/db')
 
 const redeem = async (req, res) => {
-  const {user_phone, code,shop} = req.body;
-  if (!user_phone || !code || !shop) {
-    return res.status(400).json({error: 'user_phone, shop and code are required'})
+  const {user_phone, code, shop_slug} = req.body;
+  if (!user_phone) {
+      return res.status(400).json({error: 'user_phone are required'})
+  }
+  if (!code) {
+      return res.status(400).json({error: 'code are required'})
+  }
+  if (!shop_slug) {
+    return res.status(400).json({error: 'shop_slug are required'})
   }
 
   const validateUserQuery = `SELECT *
@@ -14,12 +20,12 @@ const redeem = async (req, res) => {
                              WHERE code = ?`;
   const validateShopQuery = `SELECT *
                              FROM shops
-                             WHERE id = ?`;
+                             WHERE slug = ?`;
 
   try {
     const [userResult] = await db.execute(validateUserQuery, [user_phone])
     const [codeResult] = await db.execute(validateCodeQuery, [code])
-    const [shopResult] = await db.execute(validateShopQuery, [shop])
+    const [shopResult] = await db.execute(validateShopQuery, [shop_slug])
 
     if (shopResult.length === 0) {
       return res.status(404).json({error: 'Shop not found'})
@@ -40,6 +46,7 @@ const redeem = async (req, res) => {
       return res.status(409).json({error: 'Code already used'})
     }
 
+    const shop = shopResult[0].id;
     const insertQuery = `INSERT INTO user_code (user_id, code_id, shop_id)
                          VALUES (?, ?, ?)`
     const [result] = await db.execute(insertQuery, [user.id, codeDb.id, shop])

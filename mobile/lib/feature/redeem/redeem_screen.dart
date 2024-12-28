@@ -13,9 +13,10 @@ import 'package:govinh/styles/gv_text.dart';
 import 'package:govinh/styles/gv_text_form_field.dart';
 
 class RedeemScreen extends StatefulWidget {
+  final String? shopSlug;
   final String? code;
 
-  const RedeemScreen({super.key, required this.code});
+  const RedeemScreen({super.key, required this.shopSlug, required this.code});
 
   @override
   State<StatefulWidget> createState() {
@@ -112,7 +113,7 @@ class RedeemScreenState extends State<RedeemScreen> {
                     isLoading: ui.isLoading,
                     onPressed: () {
                       String phoneNumber = phoneTextEditingController.text;
-                      cubit.redeem(phoneNumber, widget.code ?? "");
+                      cubit.redeem(widget.shopSlug ?? "", phoneNumber, widget.code ?? "123");
                     },
                   ),
                   const Gap(16),
