@@ -9,8 +9,8 @@ class Code {
   factory Code.fromJson(Map<String, dynamic> json) {
     return Code(
       id: json['id'].toString(),
-      value: json['random_string'] ?? "",
-      used: json['used'] ?? false,
+      value: json['code'] ?? "",
+      used: json['is_used'] == 0 ? false : true,
     );
   }
 
@@ -21,5 +21,10 @@ class Code {
       'value': value,
       'used': used,
     };
+  }
+
+  @override
+  String toString() {
+    return toJson().toString();
   }
 }

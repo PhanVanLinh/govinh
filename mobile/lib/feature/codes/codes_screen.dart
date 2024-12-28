@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:govinh/data/model/code.dart';
+import 'package:govinh/data/source/remote/service/base_client.dart';
+import 'package:govinh/feature/codes/bloc/get_codes_use_case.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -8,11 +10,12 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:dio/dio.dart';
 
 class CodesScreen extends StatefulWidget {
-  final int? from;
-  final int? to;
-  final String adminCode;
+  final int start;
+  final int end;
+  final String shopId;
+  final String adminKey;
 
-  const CodesScreen({super.key, this.from, this.to, required this.adminCode});
+  const CodesScreen({super.key, required this.start, required this.end, required this.adminKey, required this.shopId});
 
   @override
   State<StatefulWidget> createState() {
@@ -23,7 +26,7 @@ class CodesScreen extends StatefulWidget {
 class CodesScreenState extends State<CodesScreen> {
   @override
   Widget build(BuildContext context) {
-    if (widget.adminCode.isEmpty) {
+    if (widget.adminKey.isEmpty) {
       return const Scaffold(
           body: Column(
         children: [
@@ -51,13 +54,20 @@ class CodesScreenState extends State<CodesScreen> {
     );
   }
 
+  // TODO FIXED check why generate code dont return if start and end is small
   Future<Uint8List> generateResume(PdfPageFormat format) async {
     final doc = pw.Document(title: 'Code', author: 'Phan Van Linh');
-    final dio = Dio();
-    final response = await dio.get('https://mocki.io/v1/5b848dc4-ef95-451d-9f22-d6d1aadab625');
-
-    // Extract items list and parse it into a List<Code>
-    List<Code> codes = (response.data['items'] as List<dynamic>).map((item) => Code.fromJson(item)).toList();
+    GetCodesUseCase getCodesUseCase = GetCodesUseCase();
+    List<Code> codes = [];
+    (await getCodesUseCase.execute(GetCodesInput(
+        start: widget.start, end: widget.end, shopId: widget.shopId, adminKey: widget.adminKey)
+    )).fold((error){
+      print("LINHSSS $error");
+    }, (response){
+      codes = response;
+    });
+    print("LINHSSS ${codes.length}");
+    print("LINHSSS ${codes[1]}");
 
     final img = await rootBundle.load('assets/images/logo.png');
     final imageBytes = img.buffer.asUint8List();

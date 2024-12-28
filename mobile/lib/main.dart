@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
-import 'package:govinh/codes_screen.dart';
+import 'package:govinh/feature/codes/codes_screen.dart';
 import 'package:govinh/feature/home/home_screen.dart';
 import 'package:govinh/feature/redeem/redeem_screen.dart';
 import 'package:govinh/feature/user_rewards/redeem_success_screen.dart';
@@ -29,11 +29,12 @@ final _router = GoRouter(
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
-      path: '/codes/:from/:to',
+      path: '/codes/:start/:end',
       builder: (context, state) =>  CodesScreen(
-        from: int.tryParse(state.pathParameters['from'] ?? ""),
-        to: int.tryParse(state.pathParameters['to'] ?? ""),
-        adminCode: state.uri.queryParameters['adminCode'] ?? "",
+        start: int.parse(state.pathParameters['start'] ?? ""),
+        end: int.parse(state.pathParameters['end'] ?? ""),
+        adminKey: state.uri.queryParameters['key'] ?? "",
+        shopId: state.uri.queryParameters['shop_id'] ?? "",
       ),
     ),
     GoRoute(
