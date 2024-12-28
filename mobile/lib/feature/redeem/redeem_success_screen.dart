@@ -113,7 +113,7 @@ class RewardItem extends StatelessWidget {
         children: [
           Image(image: AssetImage('assets/images/logo.png'), height: 50,),
           Gap(16),
-          Text("${reward.title}"),
+          Text("${reward.name}"),
           Expanded(child: SizedBox()),
           Text("${reward.point} ${Lt.point}")
         ],
