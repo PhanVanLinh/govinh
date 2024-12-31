@@ -1,27 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-ThemeData theme = ThemeData(
+ThemeData baseTheme = ThemeData(
   brightness: Brightness.light,
   primaryColor: Colors.black,
   scaffoldBackgroundColor: Colors.white,
-  textTheme: const TextTheme(
-    // headline1: TextStyle(
-    //   fontFamily: 'Cursive',
-    //   fontSize: 32,
-    //   fontWeight: FontWeight.bold,
-    //   color: Colors.black,
-    // ),
-    // bodyText1: TextStyle(
-    //   fontFamily: 'Serif',
-    //   fontSize: 18,
-    //   color: Colors.black87,
-    // ),
-    // bodyText2: TextStyle(
-    //   fontFamily: 'Serif',
-    //   fontSize: 16,
-    //   color: Colors.black54,
-    // ),
-  ),
+
+
   appBarTheme: AppBarTheme(
     color: Colors.green
   ),
@@ -55,4 +40,8 @@ ThemeData theme = ThemeData(
       ),
     ),
   ),
+);
+
+ThemeData theme = baseTheme.copyWith(
+  textTheme: GoogleFonts.notoSansTextTheme(baseTheme.textTheme),
 );

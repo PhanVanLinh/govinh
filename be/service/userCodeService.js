@@ -32,7 +32,7 @@ const redeem = async (req, res) => {
     }
 
     if (userResult.length === 0) {
-      return res.status(404).json({error: 'User not found'})
+      return res.status(401).json({error: 'User not found'})
     }
 
     if (codeResult.length === 0) {

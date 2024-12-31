@@ -1,7 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:govinh/data/source/remote/service/base_client.dart';
 import 'package:govinh/feature/redeem/usecase/redeem_usecase.dart';
 
 class RedeemAction {}
+class NeedAuthAction extends RedeemAction {
+  final String phoneNumber;
+
+  NeedAuthAction({required this.phoneNumber});
+}
 class GoSuccessAction extends RedeemAction {
   final String phoneNumber;
 
@@ -41,6 +47,12 @@ class RedeemCubit extends Cubit<RedeemUI> {
     emit(RedeemUI(isLoading: true, error: null));
       (await redeemUseCase.execute(RedeemInput(phoneNumber: phoneNumber, code: code, shopSlug: shopSlug))).fold
       ((error) {
+        if (error is ServerException) {
+        if (error.statusCode == 401) {
+          emit(RedeemUI(isLoading: false, action: NeedAuthAction(phoneNumber: phoneNumber)));
+          return;
+        }
+        }
         emit(RedeemUI(isLoading: false, error: error.toString()));
       },
       (response) {

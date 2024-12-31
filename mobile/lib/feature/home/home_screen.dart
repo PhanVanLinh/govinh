@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:govinh/feature/home/home_cubit.dart';
-import 'package:govinh/feature/redeem/redeem_screen.dart';
 import 'package:govinh/lt.dart';
 import 'package:govinh/styles/gv_appbar.dart';
 
