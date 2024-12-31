@@ -24,7 +24,7 @@ const addCode = async (shop_id, count = 50) => {
 
   const codes = []
   for (let i = 1; i <= count; i++) {
-    const code = generateRandomCode(Math.floor(Math.random() * (8 - 5 + 1)) + 5)
+    const code = generateRandomCode(Math.floor(Math.random() * (12 - 8 + 1)) + 8)
     const point = i % 10 === 0 ? 20 : 10
     codes.push([code, point, shop_id])
   }

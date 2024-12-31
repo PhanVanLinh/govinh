@@ -1,4 +1,105 @@
 const db = require('../database/db')
+const {addCode} = require('../service/codeService')
+
+const index = async (req, res) => {
+  try {
+    const shop = req.params.shop
+    const usersQuery = `SELECT COUNT(*) AS userCount
+                        FROM users`
+    const [userResult] = await db.execute(usersQuery)
+    const userCount = userResult[0].userCount
+
+    const usedCodesQuery = `SELECT COUNT(*) AS usedCount
+                            FROM codes
+                            WHERE is_used = 1
+                              AND shop_id = ${shop}`
+    const [usedCodesResult] = await db.execute(usedCodesQuery)
+    const usedCount = usedCodesResult[0].usedCount
+
+    const unusedCodesQuery = `SELECT COUNT(*) AS unusedCount
+                              FROM codes
+                              WHERE is_used = 0
+                                AND shop_id = ${shop}`
+    const [unusedCodesResult] = await db.execute(unusedCodesQuery)
+    const unusedCount = unusedCodesResult[0].unusedCount
+
+    const rewardsQuery = `SELECT COUNT(*) AS rewardsCount
+                          FROM rewards
+                          where shop_id = ${shop}`
+    const [rewardsResult] = await db.execute(rewardsQuery)
+    const rewardsCount = rewardsResult[0].rewardsCount
+
+    res.render('index', {
+      userCount,
+      usedCount,
+      unusedCount,
+      rewardsCount,
+      shop
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({error: 'Error fetching data'})
+  }
+}
+
+const shops = async (req, res) => {
+  try {
+    const query = `SELECT *
+                   FROM shops`
+    const [result] = await db.execute(query)
+    res.render('shops', {
+      shops: result,
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({error: 'Error fetching shops'})
+  }
+}
+
+const getCodes = async (req, res) => {
+  try {
+    const query = `SELECT *
+                   FROM codes
+                   where shop_id = ${req.query.shop}`
+    const [result] = await db.execute(query)
+
+    const usedCount = result.filter(code => code.is_used).length
+    const unusedCount = result.filter(code => !code.is_used).length
+
+    res.render('codes', {
+      codes: result,
+      usedCount: usedCount,
+      unusedCount: unusedCount
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({error: 'error in getCodes'})
+  }
+}
+
+const newCodes = async (req, res) => {
+  try {
+    await addCode(req.query.shop);
+    res.json({ success: true, message: "Codes added successfully!" });
+  } catch (e) {
+    console.error(e);
+    res.json({ success: false, message: "Error adding codes." });
+  }
+}
+
+
+const getRewards = async (req, res) => {
+  try {
+    const query = `SELECT *
+                   FROM rewards
+                   where shop_id = ${req.query.shop}`
+    const [result] = await db.execute(query)
+    res.render('rewards', {rewards: result, shop: req.query.shop})
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({error: 'error in getRewards'})
+  }
+}
 
 const getUsersWithCodesAndRewards = async (req, res) => {
   const query = `
@@ -44,11 +145,11 @@ const getUsersWithCodesAndRewards = async (req, res) => {
 
   try {
     const [results] = await db.query(query)
-    res.render('admin', {users: results})
+    res.render('users', {users: results})
   } catch (err) {
     console.error(err)
     res.status(500).send('Internal Server Error')
   }
 }
 
-module.exports = {getUsersWithCodesAndRewards}
+module.exports = {getUsersWithCodesAndRewards, index, getCodes, getRewards, shops, newCodes}

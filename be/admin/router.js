@@ -1,7 +1,11 @@
 const express = require('express')
-const {getUsersWithCodesAndRewards} = require('./index')
+const {getUsersWithCodesAndRewards, index, getCodes, getRewards, shops, newCodes} = require('./index')
 const router = express.Router()
-
-router.get('/users-with-details', getUsersWithCodesAndRewards)
+router.get('/shops/:shop', index)
+router.get('/users', getUsersWithCodesAndRewards)
+router.get('/codes', getCodes)
+router.post('/codes', newCodes)
+router.get('/rewards', getRewards)
+router.get('/', shops)
 
 module.exports = router

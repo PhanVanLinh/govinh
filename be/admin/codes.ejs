@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f7fa;
+        }
+
+        .card {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .card-text {
+            font-size: 1rem;
+        }
+
+        .used {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .unused {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .count-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            padding: 15px;
+        }
+
+        .count-container h4 {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .count-container .col {
+            text-align: center;
+        }
+
+        @media (max-width: 576px) {
+            .count-container h4 {
+                font-size: 1.1rem;
+            }
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #007bff, #6610f2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(45deg, #6610f2, #007bff);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+<div class="container my-4">
+    <h1 class="text-center mb-4 text-primary">Codes</h1>
+
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-btn mb-3 d-inline-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
+        </svg>
+        Back
+    </a>
+
+    <div class="row count-container mb-4">
+        <div class="col">
+            <h4>Used Codes: <%= usedCount %></h4>
+        </div>
+        <div class="col">
+            <h4>Unused Codes: <%= unusedCount %></h4>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6">
+        <% codes.forEach(function(code) { %>
+            <div class="col mb-4">
+                <div class="card <%= code.is_used ? 'used' : 'unused' %>">
+                    <div class="card-body">
+                        <h5 class="card-title">Code: <%= code.code %></h5>
+                        <p class="card-text">Status: <%= code.is_used ? 'Used' : 'Available' %></p>
+                        <p class="card-text">Points: <%= code.point %></p>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

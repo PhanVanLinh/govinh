@@ -18,7 +18,7 @@ samples, guidance on mobile development, and a full API reference.
 ## TODO
 1) Reward
 Image for rewards to folder
-Admin page for rewards (CRUD) check if can use library
+Admin page for rewards (CRUD) check if can use library done
 Rewards point is value, check to use point or code? => value
 
 2) Redeem
@@ -27,11 +27,11 @@ Api POST redeem
 - Return: 
 
 4) Codes
-- Make code longer (8-12)
-- READ all codes
+- Make code longer (8-12) done
+- READ all codes done
 
 5) Main admin page
-To link the other page
+To link the other page done
 
 FE optimize
 - Reward item
